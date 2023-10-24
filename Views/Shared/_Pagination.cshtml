@@ -1,0 +1,59 @@
+@{
+    
+    int rangebutton = Model.GetType().GetProperty("rangebutton") != null ? Model.GetType().GetProperty("rangebutton")?.GetValue(Model, null) : 3;
+    int[] takeoption = Model.GetType().GetProperty("takeoption") != null ? Model.GetType().GetProperty("takeoption")?.GetValue(Model, null) 
+        : new[] {5, 10};
+    int takedf = takeoption[0];
+
+    int skip = Request.Params["skip"]!= null ? int.Parse(Request.Params["skip"]) : 0;
+    int take =Request.Params["take"]!= null ? int.Parse(Request.Params["take"]) : takedf;
+    int currentPage = (skip / take) + 1;
+    double page = Math.Ceiling(Convert.ToDouble(ViewBag.total) / Convert.ToDouble(take));
+}  
+<div class="row">
+    <nav class=" col-md-9 mb-3" aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">@Html.ActionLink("Previous", "", new { take=take,skip=skip-take }, new {@class=  currentPage<=1 ? "page-link disabled " : "page-link" })</li>
+            @for (int index = 1; index <= page; index++)
+            {
+                <li class="page-item">
+                    @*
+        <a class="page-link" href="#">1</a>
+        *@
+                    @if ( index<=currentPage &&index >= currentPage-rangebutton || index>=currentPage && index <= currentPage + rangebutton-1)
+                    {
+                        @Html.ActionLink(@index.ToString(), "", new { take=take,skip=(index-1)*take }, new {@class=  currentPage==index ? "page-link disabled " : "page-link"  })
+
+                    }
+     
+                </li>
+            }
+            <li class="page-item">
+                @*
+    <a class="page-link" href="#">Next</a>
+    *@
+                @Html.ActionLink("Next", "", new { take=take,skip=skip+take }, new {@class=  currentPage+1>page ? "page-link disabled " : "page-link" })
+            </li>
+        </ul>
+    </nav>
+        <div class="col-auto">
+      <label>Total: @ViewBag.total</label>
+        </div>
+    <div class="col-auto">
+        <label>View</label>
+        <select class="form-select-sm" id="takepaginate">
+            @foreach (int item in takeoption)
+            {
+                <option value="@item" @(take == item ? "selected" : "")>@item</option>
+            }
+        </select>
+    </div>
+</div>
+<script>
+document.getElementById("takepaginate").addEventListener("change",function(e) {
+    var link = document.location.href;
+    var url = new URL(link);
+    url.searchParams.set("take",String(event.target.value));
+    document.location.href = url.toString();
+})
+</script>
