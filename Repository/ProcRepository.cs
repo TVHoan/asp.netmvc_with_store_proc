@@ -16,7 +16,7 @@ namespace netmvc.Repository
         private TEntity Entity { get; set; }
         */
 
-
+        
         public async Task<int> ExcuteProc<TInput>(TInput input, string ProcName)
         {
             var props = input.GetType().GetProperties();
