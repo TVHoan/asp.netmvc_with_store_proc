@@ -43,6 +43,8 @@ namespace netmvc
       container.RegisterType(typeof(IUserStore<>), typeof(UserStore<>));
       container.RegisterType<IUserStore<ApplicationUser>,UserStore<ApplicationUser>>(); 
       container.RegisterType<ApplicationDbContext>(new InjectionConstructor());
+      container.RegisterType<ManageController>(new InjectionConstructor());
+      container.RegisterType<AuthController>(new InjectionConstructor());
       container.RegisterType<AccountController>(new InjectionConstructor());
       container.RegisterType<DbConnection, SqlConnection>(
         new InjectionFactory(c => new SqlConnection(ConfigurationManager.
