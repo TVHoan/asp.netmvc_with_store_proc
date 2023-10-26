@@ -5,17 +5,26 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.UI;
+using netmvc.Dto.Post;
 using netmvc.Models;
+using netmvc.Repository;
 
 namespace netmvc.Controllers
 {
     public class PostController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly IPostRepository _repository;
+
+        public PostController(IPostRepository repository)
+        {
+            _repository = repository;
+        }
 
         // GET: Post
         public ActionResult Index([FromUri]int take = 3, int skip = 0)
@@ -44,7 +53,7 @@ namespace netmvc.Controllers
         // GET: Post/Create
         public ActionResult Create()
         {
-            return View(new Post());
+            return View(new PostInputDto());
         }
 
         // POST: Post/Create
@@ -52,22 +61,18 @@ namespace netmvc.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,Author,Created")] Post post)
+        public async Task<ActionResult>  Create([Bind(Include = "Id,Name,Description,Author,Created")] PostInputDto post)
         {
 
             if (ModelState.IsValid)
             {
-                SqlParameter[] sqlParameters = 
-                {
-                    new SqlParameter("@Name", post.Name),
-                    new SqlParameter("@Description", post.Description),
-                    new SqlParameter("@Author", post.Author),
-                    new SqlParameter("@Created", DateTime.Now),
-                };
+
             try
             {
-                    var row=  db.Database.ExecuteSqlCommand("exec dbo.Post_Insert @Name, @Description, @Author, @Created",
-                    sqlParameters);
+                ProcRepository repository = new ProcRepository();
+               await repository.ExcuteProc<PostInputDto>(post, "dbo.Post_Insert");
+                    /*var row=  db.Database.ExecuteSqlCommand("exec dbo.Post_Insert @Name, @Description, @Author, @Created",
+                    sqlParameters);*/
             }
             catch (Exception e)
             {
@@ -92,7 +97,14 @@ namespace netmvc.Controllers
             {
                 return HttpNotFound();
             }
-            return View(post);
+            return View(new PostInputUpdate
+            {
+                Name = post.Name,
+                Description = post.Description,
+                Author = post.Author,
+                Id = post.Id,
+                Created = post.Created
+            });
         }
 
         // POST: Post/Edit/5
@@ -100,23 +112,14 @@ namespace netmvc.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,Author,Created")] Post post)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description,Author,Created")] PostInputUpdate post)
         {   
             if (ModelState.IsValid)
-            {               
-                SqlParameter[] sqlParameters = 
-                {   
-                    new SqlParameter("@Id", post.Id),
-                    new SqlParameter("@Name", post.Name),
-                    new SqlParameter("@Description", post.Description),
-                    new SqlParameter("@Author", post.Author),
-                    new SqlParameter("@Created", DateTime.Now),
-                };
-            try
             {
-                    var row=  db.Database.ExecuteSqlCommand("exec dbo.Post_Update @Id, @Name, @Description, @Author, @Created",
-                    sqlParameters);
-            }
+                try
+                {
+                    await _repository.Update(post);
+                }
             catch (Exception e)
             {
                 ViewBag.error = e.Message;
@@ -145,16 +148,15 @@ namespace netmvc.Controllers
         // POST: Post/Delete/5
         [System.Web.Mvc.HttpPost, System.Web.Mvc.ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult >DeleteConfirmed(int id)
         {
-                
-            SqlParameter[] sqlParameters = 
-            {   
-                new SqlParameter("@Id", id),
-            };
+
             try
             {
-                db.Database.ExecuteSqlCommand("exec dbo.Post_Delete @Id ", sqlParameters);
+                await _repository.Delete(new PostInputDelete
+                {
+                    Id = id
+                });
             }
             catch (Exception e)
             {
