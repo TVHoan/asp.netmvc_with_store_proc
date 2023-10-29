@@ -1,0 +1,121 @@
+﻿@model netmvc.Models.Expense
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm( "Create","Expenses", FormMethod.Post, new { enctype="multipart/form-data"})) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Expense</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            
+            @Html.LabelFor(model => model.Imageurl, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <video id="webcam" autoplay playsinline width="640" height="480"></video>
+                <canvas id="canvas" class="d-none"></canvas>
+                <audio id="snapSound" src="audio/snap.wav" preload = "auto"></audio>
+                <input type="file" id="file" name="file" ></input>
+                <button type="button" class="btn btn-primary cycle" id="snap" >Snap</button>
+                @*
+                @Html.EditorFor(model => model.Imageurl, new { htmlAttributes = new { @class = "form-control" } })
+                *@
+                @Html.ValidationMessageFor(model => model.Imageurl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Type, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<script>
+
+2
+3
+4
+const webcamElement = document.getElementById('webcam');
+const canvasElement = document.getElementById('canvas');
+/*
+const snapSoundElement = document.getElementById('snapSound');
+*/
+const webcam = new Webcam(webcamElement, 'user', canvasElement);
+webcam.start()
+   .then(result =>{
+      console.log("webcam started");
+   })
+   .catch(err => {
+       console.log(err);
+   });
+function fileListFrom (files) {
+  const b = new ClipboardEvent("").clipboardData || new DataTransfer()
+  for (const file of files) b.items.add(file)
+  return b.files
+}
+document.querySelector('#snap').addEventListener("click",function(e) {
+    e.preventDefault()
+    
+    let picture = webcam.snap();
+    const byteCharacters = atob(picture.split(",")[1]);
+      const byteArrays = [];
+    
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays.push(byteCharacters.charCodeAt(i));
+      }
+    
+      const byteArray = new Uint8Array(byteArrays);
+      const blob = new Blob([byteArray], { type: 'image/jpeg' });
+        
+      // Create a File object with the Blob and set it as the value of the input file
+      const fileList = fileListFrom([
+        new File([blob], new Date().toISOString(), { type: 'image/jpeg' })
+      ])
+      document.getElementById('file').files = fileList;
+
+/*    console.log(picture)
+*//*
+  document.querySelector('#download-photo').href = picture;
+*/
+})
+
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

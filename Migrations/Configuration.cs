@@ -23,7 +23,7 @@ namespace netmvc.Migrations
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method
             //  to avoid creating duplicate seed data.
-            if (!context.Roles.Any(r => r.Name == "admin"))
+/*            if (!context.Roles.Any(r => r.Name == "admin"))
             {
                 var store = new RoleStore<IdentityRole>(context);
                 var manager = new RoleManager<IdentityRole>(store);
@@ -36,13 +36,15 @@ namespace netmvc.Migrations
             {   var PasswordHash = new PasswordHasher();
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
-                var user = new ApplicationUser {UserName = "admin@admin.com",
+                var user = new ApplicationUser {
+                    Id = new Guid().ToString(),
+                    UserName = "admin@admin.com",
                     Email ="admin@admin.com"
                 };
 
-                manager.Create(user, "123456");
+                var result = manager.Create(user, "123456");
                 manager.AddToRole(user.Id, "admin");
-            }
+            }*/
         }
     }
 }

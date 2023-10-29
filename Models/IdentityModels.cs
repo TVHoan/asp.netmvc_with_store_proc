@@ -24,7 +24,6 @@ namespace netmvc.Models
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
-        public DbSet<Post> Posts { get; set; }
 
         public static ApplicationDbContext Create()
         {
@@ -33,8 +32,17 @@ namespace netmvc.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ExpenseType>()
+                .HasMany(x => x.Expenses);
+            
             modelBuilder.Entity<Post>().MapToStoredProcedures();
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Expense> Expenses { get; set; }
+        public DbSet<ExpenseType> ExpenseTypes { get; set; }
+        public DbSet<Income> Incomes { get; set; }
+        public DbSet<Post> Posts { get; set; }
+
     }
 }

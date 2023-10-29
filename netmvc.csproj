@@ -286,7 +286,11 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\ExpensesController.cs" />
+    <Compile Include="Controllers\ExpenseTypesController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IncomesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Data\DbContextSeedData.cs" />
@@ -321,9 +325,20 @@
     <Compile Include="Migrations\202310250918589_Seeding_User.designer.cs">
       <DependentUpon>202310250918589_Seeding_User.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310270230227_Expence.cs" />
+    <Compile Include="Migrations\202310270230227_Expence.designer.cs">
+      <DependentUpon>202310270230227_Expence.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202310270307486_Add_userid_income.cs" />
+    <Compile Include="Migrations\202310270307486_Add_userid_income.designer.cs">
+      <DependentUpon>202310270307486_Add_userid_income.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Expense.cs" />
+    <Compile Include="Models\ExpenseType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Income.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -363,6 +378,8 @@
     <None Include=".dockerignore">
       <DependentUpon>Dockerfile</DependentUpon>
     </None>
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\tranvuhoan.com - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -415,9 +432,25 @@
     <Content Include="Views\Post\Details.cshtml" />
     <Content Include="Views\Post\Edit.cshtml" />
     <Content Include="Views\Post\Index.cshtml" />
+    <Content Include="Views\Expenses\Create.cshtml" />
+    <Content Include="Views\Expenses\Delete.cshtml" />
+    <Content Include="Views\Expenses\Details.cshtml" />
+    <Content Include="Views\Expenses\Edit.cshtml" />
+    <Content Include="Views\Expenses\Index.cshtml" />
+    <Content Include="Views\ExpenseTypes\Create.cshtml" />
+    <Content Include="Views\ExpenseTypes\Delete.cshtml" />
+    <Content Include="Views\ExpenseTypes\Details.cshtml" />
+    <Content Include="Views\ExpenseTypes\Edit.cshtml" />
+    <Content Include="Views\ExpenseTypes\Index.cshtml" />
+    <Content Include="Views\Incomes\Create.cshtml" />
+    <Content Include="Views\Incomes\Delete.cshtml" />
+    <Content Include="Views\Incomes\Details.cshtml" />
+    <Content Include="Views\Incomes\Edit.cshtml" />
+    <Content Include="Views\Incomes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -461,6 +494,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310250918589_Seeding_User.resx">
       <DependentUpon>202310250918589_Seeding_User.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310270230227_Expence.resx">
+      <DependentUpon>202310270230227_Expence.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310270307486_Add_userid_income.resx">
+      <DependentUpon>202310270307486_Add_userid_income.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
